@@ -7,6 +7,8 @@ import med.voll.api.medico.DadosListagemMedico;
 import med.voll.api.medico.Medico;
 import med.voll.api.medico.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +32,17 @@ public class MedicoController {
 
     //vai falar qual verbo do protocolo http vai ser chamado (nesse caso: GET)
     @GetMapping
-    public List<DadosListagemMedico> listarMedicos() {
+    public Page<DadosListagemMedico> listarMedicos(Pageable paginacao) {
         //repository.findAll() [encontra e retorna lista de medicos
         //stream().map(DadosListagemMedico::new) [converte a lista de medico para dadosListagemMedico]
+        //########################################################
+        //################Codigo sem paginação:###################
         //.toList() [converte para lista]
-        return repository.findAll().stream().map(DadosListagemMedico::new).toList();
+        // return repository.findAll().stream().map(DadosListagemMedico::new).toList();
+        //########################################################
+        //findAll(paginacao) serve para aparecer X registros por vez
+        return repository.findAll(paginacao).map(DadosListagemMedico::new);
+        //OBS: PARA TROCAR O TAMANHO DE REGISTROS MOSTRADOS: http://localhost:8080/medicos?size=1
+        //OBS: PARA TROCAR A PAGINA: http://localhost:8080/medicos?size=1&page=1
     }
 }
